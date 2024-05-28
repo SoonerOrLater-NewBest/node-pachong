@@ -61,12 +61,24 @@ const fs = require("fs");
       }
     );
 
+    // 获取简介内容
+    const description = await page.$eval("p.data.hidden-xs", (element) => {
+      const spans = element.querySelectorAll("span");
+      for (const span of spans) {
+        if (span.innerText.includes("简介：")) {
+          return span.nextSibling.nodeValue.trim();
+        }
+      }
+      return "";
+    });
+
     // 添加到JSON数据数组
     jsonData.push({
       title: anime.title,
       thumb: anime.thumbnail,
       status: anime.updateStatus,
       latestLink: latestEpisodeLink,
+      description: description,
     });
 
     // 随机延迟请求，模拟人为操作
